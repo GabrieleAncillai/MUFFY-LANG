@@ -1,0 +1,12 @@
+main {
+    print "digite su nombre"
+    name = input("Nombre: ")
+    print "digite su edad"
+    age = input("Edad: ")
+
+    print "su nombre es  ${name}"
+
+    forEach year in age {
+        print "imprimendo edad: ${year}"
+    }
+}

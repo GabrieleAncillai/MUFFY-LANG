@@ -1,2 +1,11 @@
+
+# Pycharm
+/.idea
+/venv
+/__pycache__
+
+# Build
 /dist
-.idea
+/build
+
+.pcy

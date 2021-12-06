@@ -7,8 +7,6 @@ def LexAnalizer(DocLines):
     for line in DocLines:
 
         WritingString = False
-        SingleCommentMode = False
-        MultiCommentMode = False
 
         for index, character in enumerate(line):
 

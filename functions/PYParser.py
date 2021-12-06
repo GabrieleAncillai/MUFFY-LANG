@@ -68,8 +68,6 @@ def ParserToPY(TokenLines):
                     Output += "False"
                 case "is" | "equals":
                     Output += "=="
-                case "or":
-                    Output += "|"
                 case "in":
                     if NextToken.isdigit():
                         Output += "in range("

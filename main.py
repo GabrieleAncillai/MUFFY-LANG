@@ -1,35 +1,75 @@
 from functions.PYParser import ParserToPY
-from functions.CPPParser import ParserToCPP
 from functions.Lexer import LexAnalizer
-import time
 import os
+import sys
+import time
 
 if __name__ == '__main__':
+
+    # Temporizador de compilación
     StartTimer = time.time()
-    MuffyFile = open("muffy_lang_example.muffy", "r")
-    Lines = MuffyFile.readlines()
-    TokenizedLines = LexAnalizer(Lines)
 
-    '''
-        for token in TokenizedLines:
-        print("token: {}".format(token.replace("\n", "TAB")))
-    '''
+    # Recibe como parámetro de sistema (comando), el archivo a ejecutar
+    FILE_TO_COMPILE = sys.argv[1] if len(sys.argv) > 1 else "main.muffy"
 
-    ParsedLangCPP = ParserToCPP(TokenizedLines)
-    ParsedLangPY = ParserToPY(TokenizedLines)
+    MuffyFile = None
 
+    # Carpeta residuo con los datos del parser
+    OutputFolder = "dist"
+    OutputFile = f"{OutputFolder}/data.py"
+
+    # Manejo de errores para archivos inexistentes
     try:
-        os.remove("dist/muffy_out.cpp")
+        MuffyFile = open(FILE_TO_COMPILE, "r")
     except:
-        print("Error eliminating output files")
+        print("File not found")
+        exit()
 
-    try:
-        os.remove("dist/muffy_out.py")
-    except:
-        print("Error eliminating output files")
+    if MuffyFile is not None:
 
-    OutFileCPP = open("dist/muffy_out.cpp", "x")
-    OutFileCPP.write(ParsedLangCPP)
-    OutFilePY = open("dist/muffy_out.py", "x")
-    OutFilePY.write(ParsedLangPY)
-    print("--- %s seconds ---" % (time.time() - StartTimer))
+        Lines = MuffyFile.readlines()
+        TokenizedLines = LexAnalizer(Lines)
+
+        ParsedLangPY = ParserToPY(TokenizedLines)
+
+        try:
+            os.remove(OutputFile)
+            print("Eliminated output file")
+        except:
+            print("Error eliminating output files")
+
+        if not os.path.exists(OutputFolder):
+            os.mkdir("dist")
+
+        OutFilePY = open(OutputFile, "x")
+        OutFilePY.write(ParsedLangPY)
+        OutFilePY.close()
+
+        print("- - - File Compiled in %s sec - - -" % (time.time() - StartTimer))
+
+        time.sleep(1)
+
+        try:
+            PathFile = OutputFile
+            source = open(PathFile).read()
+            code = compile(source, PathFile, 'exec')
+            exec(code)
+        except NameError:
+            print(f"Error: {NameError}")
+
+        # EXECUTION TESTING
+
+        # source = open(OutputFile).read()
+        # code = compile(source, OutputFile, 'exec')
+        # exec(code)
+        # os.system(f"python {OutputFile}")
+        # with open(OutputFile, "r") as file:
+        #     exec(file.read())
+        # runpy.run_path(OutputFile, run_name='__main__')
+        # runpy.run_module("data", run_name='__main__')
+
+        print("- - - Process finished in %s sec - - -" % (time.time() - StartTimer))
+
+    else:
+        print("File not found")
+        exit()
